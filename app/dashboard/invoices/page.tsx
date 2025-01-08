@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/invoices/table';
@@ -7,6 +8,10 @@ import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchInvoicesPages } from '@/app/lib/data';
  
+export const metadata: Metadata = {
+  title: 'Invoices',
+}
+
 export default async function Page(props: {
   searchParams?: Promise<{
     query?: string;
@@ -30,9 +35,11 @@ export default async function Page(props: {
        <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
-      </div>
+        <div className="mt-5 flex w-full justify-center">
+          <Suspense fallback="Loading...">
+            <Pagination totalPages={totalPages} />
+          </Suspense>
+        </div>
     </div>
   );
 }
