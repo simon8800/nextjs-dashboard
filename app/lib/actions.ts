@@ -1,4 +1,7 @@
-"use server";
+"use server"; // Marks server-side functions that can be called from client-side code
+
+import { signIn } from "@/auth"; // From our auth sign-in functionality
+import { AuthError } from "next-auth";
 
 import { z } from "zod";
 import { sql } from "@vercel/postgres";
@@ -6,6 +9,25 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 const dashboardInvoicesPath = "/dashboard/invoices";
+
+export async function authenticate(
+  prevState: string | undefined, 
+  formData: FormData
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
 
 /**
  * These validations will already throw errors if the format is not as expected
