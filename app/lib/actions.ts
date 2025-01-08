@@ -122,7 +122,7 @@ export async function updateInvoice(
   redirect(dashboardInvoicesPath);
 }
 
-export async function deleteInvoice(id: string) {
+export async function deleteInvoice(id: string): Promise<State> {
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath(dashboardInvoicesPath);
