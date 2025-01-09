@@ -58,7 +58,7 @@ export type State = {
   message?: string | null;
 };
 
-export async function createInvoice(prevState: State, formData: FormData): Promise<State | void> {
+export async function createInvoice(prevState: State, formData: FormData) {
   // Using safeParse will return an object with success or error field
   // Allows us to handle validation more gracefully
   const validatedFields = CreateInvoice.safeParse({
@@ -113,7 +113,7 @@ export async function updateInvoice(
   id: string,
   prevState: State,
   formData: FormData
-): Promise<State> {
+) {
   const validatedFields = UpdateInvoice.safeParse({
     customerId: formData.get("customerId"),
     amount: formData.get("amount"),
