@@ -58,7 +58,7 @@ export type State = {
   message?: string | null;
 };
 
-export async function createInvoice(prevState: State, formData: FormData): Promise<State> {
+export async function createInvoice(prevState: State, formData: FormData): Promise<State | void> {
   // Using safeParse will return an object with success or error field
   // Allows us to handle validation more gracefully
   const validatedFields = CreateInvoice.safeParse({
@@ -144,13 +144,15 @@ export async function updateInvoice(
   redirect(dashboardInvoicesPath);
 }
 
-export async function deleteInvoice(id: string): Promise<State> {
-  try {
-    await sql`DELETE FROM invoices WHERE id = ${id}`;
-    revalidatePath(dashboardInvoicesPath);
-    return { message: "Deleted Invoice" };
-  } catch (error) {
-    console.error(error);
-    return { message: "Database Error: Failed to Delete Invoice" };
-  }
+export async function deleteInvoice(id: string) {
+  await sql`DELETE FROM invoices WHERE id = ${id}`;
+  revalidatePath('/dashboard/invoices');
+  // try {
+  //   await sql`DELETE FROM invoices WHERE id = ${id}`;
+  //   revalidatePath(dashboardInvoicesPath);
+  //   return { message: "Deleted Invoice" };
+  // } catch (error) {
+  //   console.error(error);
+  //   return { message: "Database Error: Failed to Delete Invoice" };
+  // }
 }
